@@ -38,10 +38,17 @@ pub fn test_run_lsp_server() {
     });
     
     let init_params = InitializeParams { 
+        root_uri: None,
+        trace: None,
+        workspace_folders: None,
         process_id: None, 
         root_path: None,
         initialization_options: None,
-        capabilities: Value::Object(JsonObject::new()),
+        capabilities: ClientCapabilities{
+            workspace: None,
+            text_document: None,
+            experimental: None,
+        },
     };
     
     // Create an rpc handle to the server methods
@@ -132,7 +139,7 @@ impl LanguageServerHandling for TestsLanguageServer {
                 .unwrap();
             
             let hover_str = "hover_text".to_string();
-            let hover = Hover { contents: vec![MarkedString::String(hover_str)], range: None };
+            let hover = Hover { contents: HoverContents::Array(vec![MarkedString::String(hover_str)]), range: None };
             
             completable.complete(Ok(hover));
         });
