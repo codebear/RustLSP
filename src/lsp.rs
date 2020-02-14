@@ -63,7 +63,7 @@ impl LSPEndpoint {
     /* -----------------  ----------------- */
     
     pub fn run_server_from_input<SERVER>(
-        input: &mut io::BufRead, endpoint: Endpoint, lsp_server_handler: SERVER, 
+        input: &mut dyn io::BufRead, endpoint: Endpoint, lsp_server_handler: SERVER, 
     ) 
     where 
         SERVER : LanguageServerHandling + 'static,
@@ -74,7 +74,7 @@ impl LSPEndpoint {
     /// Run the message read loop on the server, for given msg_reader.
     /// msg_reader must be a LSPMessageReader or compatible.
     pub fn run_server<SERVER, MR>(
-        mut msg_reader: &mut MR, endpoint: Endpoint, lsp_server_handler: SERVER
+        msg_reader: &mut MR, endpoint: Endpoint, lsp_server_handler: SERVER
     ) 
     where 
         SERVER : LanguageServerHandling + 'static,
@@ -84,7 +84,7 @@ impl LSPEndpoint {
     }
     
     pub fn run_client_from_input<CLIENT>(
-        input: &mut io::BufRead, endpoint: Endpoint, lsp_client_handler: CLIENT,
+        input: &mut dyn io::BufRead, endpoint: Endpoint, lsp_client_handler: CLIENT,
     ) 
     where 
         CLIENT : LanguageClientHandling + 'static,
@@ -94,7 +94,7 @@ impl LSPEndpoint {
     }
     
     pub fn run_endpoint_loop<MR>(
-        mut msg_reader: &mut MR, endpoint: Endpoint, request_handler: Box<dyn RequestHandler>
+        msg_reader: &mut MR, endpoint: Endpoint, request_handler: Box<dyn RequestHandler>
     ) 
     where 
         MR : MessageReader,
@@ -162,135 +162,136 @@ impl<LS : LanguageServerHandling + ?Sized> RequestHandler for ServerRequestHandl
         &mut self, method_name: &str, params: RequestParams, completable: ResponseCompletable
     ) {
         match method_name {
-            Initialize => {
+            Initialize::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.initialize(params, completable)
                 ) 
             }
-            Shutdown => {
+            Shutdown::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.shutdown(params, completable)
                 ) 
             }
-            Exit => { 
+            Exit::METHOD => { 
                 completable.handle_notification_with(params, 
                     |params| self.0.exit(params)) 
             }
-            WorkspaceChangeConfiguration => {
+            
+            DidChangeConfiguration::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.workspace_change_configuration(params)
                 ) 
             }
-            DidOpenTextDocument => {
+            DidOpenTextDocument::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.did_open_text_document(params)
                 ) 
             }
-            DidChangeTextDocument => {
+            DidChangeTextDocument::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.did_change_text_document(params)
                 ) 
             }
-            DidCloseTextDocument => {
+            DidCloseTextDocument::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.did_close_text_document(params)
                 ) 
             }
-            DidSaveTextDocument => {
+            DidSaveTextDocument::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.did_save_text_document(params)
                 ) 
             }
-            DidChangeWatchedFiles => {
+            DidChangeWatchedFiles::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.did_change_watched_files(params)) 
             }
-            Completion => {
+            Completion::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.completion(params, completable)
                 ) 
             }
-            ResolveCompletionItem => {
+            ResolveCompletionItem::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.resolve_completion_item(params, completable)
                 ) 
             }
-            Hover => {
+            HoverRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.hover(params, completable)
                 ) 
             }
-            SignatureHelp => {
+            SignatureHelpRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.signature_help(params, completable)
                 ) 
             }
-            GotoDefinition => {
+            GotoDefinition::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.goto_definition(params, completable)
                 ) 
             }
-            References => {
+            References::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.references(params, completable)
                 ) 
             }
-            DocumentHighlight => {
+            DocumentHighlightRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.document_highlight(params, completable)
                 ) 
             }
-            DocumentSymbols => {
+            DocumentSymbolRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.document_symbols(params, completable)
                 ) 
             }
-            WorkspaceSymbols => {
+            WorkspaceSymbol::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.workspace_symbols(params, completable)
                 ) 
             }
-            CodeAction => {
+            CodeActionRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.code_action(params, completable)
                 ) 
             }
-            CodeLens => {
+            CodeLensRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.code_lens(params, completable)
                 ) 
             }
-            CodeLensResolve => {
+            CodeLensResolve::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.code_lens_resolve(params, completable)
                 ) 
             }
-            DocumentLink => {
+            DocumentLinkRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.document_link(params, completable)
                 ) 
-            }            
-            DocumentLinkResolve => {
+            }        
+            DocumentLinkResolve::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.document_link_resolve(params, completable)
                 ) 
             }            
-            Formatting => {
+            Formatting::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.formatting(params, completable)
                 ) 
             }
-            RangeFormatting => {
+            RangeFormatting::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.range_formatting(params, completable)
                 ) 
             }
-            OnTypeFormatting => {
+            OnTypeFormatting::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.on_type_formatting(params, completable)
                 ) 
             }
-            Rename => {
+            Rename::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.rename(params, completable)
                 ) 
@@ -641,25 +642,25 @@ impl<LS : LanguageClientHandling + ?Sized> RequestHandler for ClientRequestHandl
         &mut self, method_name: &str, params: RequestParams, completable: ResponseCompletable
     ) {
         match method_name {
-            ShowMessage => {
+            ShowMessage::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.show_message(params)) 
             }
-            ShowMessageRequest => {
+            ShowMessageRequest::METHOD => {
                 completable.handle_request_with(params, 
                     |params, completable| self.0.show_message_request(params, completable)
                 )
             }
-            LogMessage => { 
+            LogMessage::METHOD => { 
                 completable.handle_notification_with(params, 
                     |params| self.0.log_message(params)) 
             }
-            TelemetryEvent => {
+            TelemetryEvent::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.telemetry_event(params)
                 ) 
             }
-            PublishDiagnostics => {
+            PublishDiagnostics::METHOD => {
                 completable.handle_notification_with(params, 
                     |params| self.0.publish_diagnostics(params)
                 ) 

@@ -43,13 +43,13 @@ pub fn parse_transport_message<R : io::BufRead + ?Sized>(reader: &mut R) -> GRes
     loop {
         let mut line = String::new();
         
-        try!(reader.read_line(&mut line));
+        reader.read_line(&mut line)?;
         
         if line.starts_with(CONTENT_LENGTH) {
             let len_str : &str = &line[CONTENT_LENGTH.len()..]; 
             let int_result = len_str.trim().parse::<u32>();
             
-            content_length = try!(int_result);
+            content_length = int_result?;
             
         } else if line.eq("\r\n") {
             break;
@@ -63,7 +63,7 @@ pub fn parse_transport_message<R : io::BufRead + ?Sized>(reader: &mut R) -> GRes
     
     let mut message_reader = reader.take(content_length as u64);
     let mut message = String::new();
-    try!(message_reader.read_to_string(&mut message));
+    message_reader.read_to_string(&mut message)?;
     return Ok(message);
 }
 
@@ -91,16 +91,14 @@ fn parse_transport_message__test() {
     
 }
 
-pub fn write_transport_message<WRITE : io::Write>(message: & str, out: &mut WRITE) -> GResult<()>
-{
-//    let out : &mut io::Write = out;
-    try!(out.write_all(CONTENT_LENGTH.as_bytes()));
-    try!(out.write(&[' ' as u8]));
+pub fn write_transport_message<WRITE : io::Write>(message: & str, out: &mut WRITE) -> GResult<()> {
+    out.write_all(CONTENT_LENGTH.as_bytes())?;
+    out.write(&[' ' as u8])?;
     let contents = message.as_bytes();
-    try!(out.write_all(contents.len().to_string().as_bytes()));
-    try!(out.write_all("\r\n\r\n".as_bytes()));
-    try!(out.write_all(message.as_bytes()));
-    try!(out.flush());
+    out.write_all(contents.len().to_string().as_bytes())?;
+    out.write_all("\r\n\r\n".as_bytes())?;
+    out.write_all(message.as_bytes())?;
+    out.flush()?;
     Ok(())
 }
 
