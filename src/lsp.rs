@@ -297,6 +297,11 @@ impl<LS : LanguageServerHandling + ?Sized> RequestHandler for ServerRequestHandl
                     |params, completable| self.0.rename(params, completable)
                 ) 
             }
+            ExecuteCommand::METHOD => {
+                completable.handle_request_with(params, 
+                    |params, completable| self.0.execute_command(params, completable)
+                )
+            }
             _ => {
                 self.0.handle_other_method(method_name, params, completable);
             }
