@@ -146,6 +146,7 @@ pub trait LanguageServerHandling {
     fn range_formatting(&mut self, params: DocumentRangeFormattingParams, completable: LSCompletable<Vec<TextEdit>>);
     fn on_type_formatting(&mut self, params: DocumentOnTypeFormattingParams, completable: LSCompletable<Vec<TextEdit>>);
     fn rename(&mut self, params: RenameParams, completable: LSCompletable<WorkspaceEdit>);
+    fn execute_command(&mut self, params: ExecuteCommandParams, completable: LSCompletable<WorkspaceEdit>);
     
     #[allow(unused_variables)]
     fn handle_other_method(&mut self, method_name: &str, params: RequestParams, completable: ResponseCompletable) {
