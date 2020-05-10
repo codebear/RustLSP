@@ -20,7 +20,7 @@ extern crate serde;
 
 pub extern crate rustdt_util as util;
 pub extern crate jsonrpc;
-pub extern crate languageserver_types as ls_types;
+pub extern crate lsp_types;
 
 #[macro_use] extern crate log;
 

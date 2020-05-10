@@ -4,7 +4,7 @@
 use lsp::*;
 use jsonrpc::method_types::MethodError;
 use jsonrpc::*;
-use ls_types::*;
+use lsp_types::*;
 
 use jsonrpc::json_util::JsonObject;
 use serde_json::Value;
@@ -42,12 +42,14 @@ pub fn test_run_lsp_server() {
         trace: None,
         workspace_folders: None,
         process_id: None, 
+        client_info: None,
         root_path: None,
         initialization_options: None,
         capabilities: ClientCapabilities{
             workspace: None,
             text_document: None,
             experimental: None,
+            window: None,
         },
     };
     
@@ -110,7 +112,7 @@ impl LanguageServerHandling for TestsLanguageServer {
         let capabilities = ServerCapabilities::default();
         assert_eq!(self.counter, 0);
         self.counter = 1;
-        completable.complete(Ok(InitializeResult { capabilities : capabilities }))
+        completable.complete(Ok(InitializeResult { capabilities : capabilities, server_info: None }))
     }
     fn shutdown(&mut self, _: (), completable: LSCompletable<()>) {
         completable.complete(Ok(()));

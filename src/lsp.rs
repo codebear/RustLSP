@@ -21,9 +21,9 @@ use jsonrpc::jsonrpc_request::RequestParams;
 
 use lsp_transport::LSPMessageWriter;
 use lsp_transport::LSPMessageReader;
-use ls_types::*;
-use ls_types::notification::*;
-use ls_types::request::*;
+use lsp_types::*;
+use lsp_types::notification::*;
+use lsp_types::request::*;
 use serde_json::Value;
 
 /* -----------------  ----------------- */
