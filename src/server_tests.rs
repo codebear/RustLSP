@@ -191,7 +191,7 @@ impl LanguageServerHandling for TestsLanguageServer {
     fn rename(&mut self, _: RenameParams, completable: LSCompletable<WorkspaceEdit>) {
         completable.complete(Err(Self::error_not_available(())));
     }
-    fn execute_command(&mut self, _: ExecuteCommandParams, completable: LSCompletable<WorkspaceEdit>) {
+    fn execute_command(&mut self, _: ExecuteCommandParams, completable: LSCompletable<Option<Value>>) {
         completable.complete(Err(Self::error_not_available(())));
     }
 }
