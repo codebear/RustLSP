@@ -135,8 +135,8 @@ pub trait LanguageServerHandling {
     fn goto_definition(&mut self, params: TextDocumentPositionParams, completable: LSCompletable<Vec<Location>>);
     fn references(&mut self, params: ReferenceParams, completable: LSCompletable<Vec<Location>>);
     fn document_highlight(&mut self, params: TextDocumentPositionParams, completable: LSCompletable<Vec<DocumentHighlight>>);
-    fn document_symbols(&mut self, params: DocumentSymbolParams, completable: LSCompletable<Vec<SymbolInformation>>);
-    fn workspace_symbols(&mut self, params: WorkspaceSymbolParams, completable: LSCompletable<Vec<SymbolInformation>>);
+    fn document_symbols(&mut self, params: DocumentSymbolParams, completable: LSCompletable<DocumentSymbolResponse>);
+    fn workspace_symbols(&mut self, params: WorkspaceSymbolParams, completable: LSCompletable<DocumentSymbolResponse>);
     fn code_action(&mut self, params: CodeActionParams, completable: LSCompletable<Vec<Command>>);
     fn code_lens(&mut self, params: CodeLensParams, completable: LSCompletable<Vec<CodeLens>>);
     fn code_lens_resolve(&mut self, params: CodeLens, completable: LSCompletable<CodeLens>);

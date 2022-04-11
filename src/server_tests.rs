@@ -158,10 +158,10 @@ impl LanguageServerHandling for TestsLanguageServer {
     fn document_highlight(&mut self, _: TextDocumentPositionParams, completable: LSCompletable<Vec<DocumentHighlight>>) {
         completable.complete(Err(Self::error_not_available(())));
     }
-    fn document_symbols(&mut self, _: DocumentSymbolParams, completable: LSCompletable<Vec<SymbolInformation>>) {
+    fn document_symbols(&mut self, _: DocumentSymbolParams, completable: LSCompletable<DocumentSymbolResponse>) {
         completable.complete(Err(Self::error_not_available(())));
     }
-    fn workspace_symbols(&mut self, _: WorkspaceSymbolParams, completable: LSCompletable<Vec<SymbolInformation>>) {
+    fn workspace_symbols(&mut self, _: WorkspaceSymbolParams, completable: LSCompletable<DocumentSymbolResponse>) {
         completable.complete(Err(Self::error_not_available(())));
     }
     fn code_action(&mut self, _: CodeActionParams, completable: LSCompletable<Vec<Command>>) {
